@@ -27,11 +27,11 @@ export async function exec(command, options = {}) {
       return through2(function(buf, enc, next) {
         if (isHead) {
           isHead = false;
-          return next(null, Buffer.concat([Buffer.from("\u001b[31m"), buf]));
+          return next(null, Buffer.concat([Buffer.from("\u001b[31m"), buf, Buffer.from(resetColor)]));
         }
         return next(null, buf);
       }, function(flush) {
-        this.push(resetColor)
+        this.push(Buffer.from(resetColor))
         flush();
       })
     })()).pipe(process.stderr);
@@ -63,11 +63,11 @@ export async function spawn(command, args, options = {}) {
       return through2(function(buf, enc, next) {
         if (isHead) {
           isHead = false;
-          return next(null, Buffer.concat([Buffer.from(redColor), buf]));
+          return next(null, Buffer.concat([Buffer.from(redColor), buf, Buffer.from(resetColor)]));
         }
         return next(null, buf);
       }, function(flush) {
-        this.push(resetColor)
+        this.push(Buffer.from(resetColor))
         flush();
       })
     })()).pipe(process.stderr);
